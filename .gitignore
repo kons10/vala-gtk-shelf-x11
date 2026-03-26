@@ -1,1 +1,3 @@
 main
+*.c
+*.vala.c
