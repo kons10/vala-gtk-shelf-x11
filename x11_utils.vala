@@ -4,9 +4,11 @@ using Gdk;
 namespace X11Utils {
     public void apply_strut(Gtk.Window win, int dock_w, int dock_h) {
         var gdk_display = Gdk.Display.get_default();
-        if (!(gdk_display is Gdk.X11.Display)) return; // X11じゃなければスキップ
+        if (!(gdk_display is Gdk.X11.Display)) return;
 
-        var display = ((Gdk.X11.Display)gdk_display).get_xdisplay();
+        // ここ！ unowned を付けて「所有権を持たない参照」にするよ
+        unowned X.Display display = ((Gdk.X11.Display)gdk_display).get_xdisplay();
+        
         var gdk_win = win.get_window();
         if (gdk_win == null) return;
         
@@ -16,15 +18,15 @@ namespace X11Utils {
         var geo = monitor.get_geometry();
 
         int x = geo.x + (geo.width - dock_w) / 2;
-        int y = geo.y + geo.height - dock_h;
+        // y は計算に使わないけど、意味的に残しておくならこう
+        // もしくは行ごと消してもOK！
 
         X.Atom atom_strut = display.intern_atom("_NET_WM_STRUT", false);
         X.Atom atom_strut_partial = display.intern_atom("_NET_WM_STRUT_PARTIAL", false);
         X.Atom atom_cardinal = display.intern_atom("CARDINAL", false);
 
-        // 画面下部のスペースを予約
-        long strut[4] = { 0, 0, 0, dock_h };
-        long strut_partial[12] = { 0, 0, 0, dock_h, 0, 0, 0, 0, 0, 0, x, x + dock_w };
+        long strut[4] = { 0, 0, 0, (long)dock_h };
+        long strut_partial[12] = { 0, 0, 0, (long)dock_h, 0, 0, 0, 0, 0, 0, (long)x, (long)(x + dock_w) };
 
         display.change_property(xid, atom_strut, atom_cardinal, 32, X.PropMode.Replace, (uchar[])strut, 4);
         display.change_property(xid, atom_strut_partial, atom_cardinal, 32, X.PropMode.Replace, (uchar[])strut_partial, 12);

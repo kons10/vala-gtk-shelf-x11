@@ -7,18 +7,24 @@ namespace Config {
     public static double RADIUS_RATIO = 0.5;
     public static double WIDTH_RATIO = 1.0;
     public static double CONTROL_RATIO = 0.8;
-    public static string LAUNCHER_CMD = "rofi -show drun";
+    
+    // 初期化をメソッド内で行うため、宣言だけにする
+    public static string LAUNCHER_CMD;
     public static bool ANIMATION_ENABLED = true;
     public static int ANIMATION_DURATION = 800;
-    public static string ANIMATION_EASING = "ease_out_back";
+    public static string ANIMATION_EASING;
 
     public static void load_config() {
+        // デフォルト値をここでセット
+        LAUNCHER_CMD = "rofi -show drun";
+        ANIMATION_EASING = "ease_out_back";
+
         string config_dir = Environment.get_user_config_dir() + "/gtk-shelf-x11";
         string config_file = config_dir + "/config.json";
 
         if (!FileUtils.test(config_file, FileTest.EXISTS)) {
             DirUtils.create_with_parents(config_dir, 0755);
-            return; // 初回はデフォルト値のまま進める
+            return;
         }
 
         try {

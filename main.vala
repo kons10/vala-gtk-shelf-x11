@@ -16,6 +16,8 @@ public class DockApp : Gtk.Application {
 }
 
 int main(string[] args) {
+    Config.load_config();
+    
     // 起動前にWMへ「これはページャー・ドック系のアプリだよ」と宣言する
     Wnck.set_client_type(Wnck.ClientType.PAGER);
     

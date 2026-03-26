@@ -110,10 +110,13 @@ public class ModernDock : Gtk.ApplicationWindow {
     }
 
     private void add_window(Wnck.Window win) {
-        if (win.is_skip_taskbar() || win.get_window_type() == Wnck.WindowType.DOCK || win.get_window_type() == Wnck.WindowType.DESKTOP) {
-            return; // 表示しないウィンドウはスキップ
+        // ウィンドウの種類が「NORMAL（普通のアプリ）」以外なら無視する
+        // これでDOCKやDESKTOP、通知などの余計なウィンドウを全部弾けるよ！
+        if (win.get_window_type() != Wnck.WindowType.NORMAL) {
+            return;
         }
 
+        // 念のため、すでにリストにあるかチェック
         ulong xid = win.get_xid();
         if (this.buttons.contains(xid)) return;
 
@@ -197,11 +200,11 @@ public class ModernDock : Gtk.ApplicationWindow {
 
     private void update_css() {
         int radius = (int)(Config.DOCK_HEIGHT * Config.RADIUS_RATIO);
-        string css = @"
+        string css = """
         window { background-color: transparent; }
         .dock-container {
             background-color: rgba(35, 35, 35, 0.9);
-            border-radius: $(radius)px $(radius)px 0px 0px; 
+            border-radius: %dpx %dpx 0px 0px; 
             padding: 0px 10px;
         }
         .launcher-button { background-color: transparent; border: none; border-radius: 50%; padding: 10px; }
@@ -209,7 +212,7 @@ public class ModernDock : Gtk.ApplicationWindow {
         .app-button:hover { background-color: rgba(255,255,255,0.1); }
         .clock-label { color: #ffffff; font-weight: bold; font-size: 14px; }
         .status-pill { background-color: rgba(255,255,255,0.1); border-radius: 20px; padding: 0px 12px; }
-        ";
+        """.printf(radius, radius);
         try { this.css_provider.load_from_data(css, -1); } catch (Error e) {}
     }
 
