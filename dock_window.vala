@@ -207,7 +207,7 @@ public class ModernDock : Gtk.ApplicationWindow {
             border-radius: %dpx %dpx 0px 0px; 
             padding: 0px 10px;
         }
-        .launcher-button { background-color: transparent; border: none; border-radius: 50%; padding: 10px; }
+        .launcher-button { background-color: transparent; border: none; border-radius: 50%%; padding: 10px; }
         .app-button { background-color: transparent; border: none; border-radius: 12px; padding: 6px; transition: background-color 200ms; }
         .app-button:hover { background-color: rgba(255,255,255,0.1); }
         .clock-label { color: #ffffff; font-weight: bold; font-size: 14px; }
